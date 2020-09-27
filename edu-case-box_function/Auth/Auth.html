@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Регистрация</title>
+    <link rel="stylesheet" href="AuthStyle.css">
+</head>
+<!---->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script type="text/javascript" src="anim.js"></script>
+
+<body onload="captcha()">
+
+<div class="form-wrap">
+    <div class="profile">
+        <h1>Регистрация</h1>
+    </div>
+    <form>
+        <div>
+            <label for="name">Имя</label>
+            <input type="text" id="name">
+            <div class="error-box">&nbsp;</div>
+        </div>
+        <!--- ----------->
+        <div class="radio" id="gender">
+            <span>Пол</span>
+            <label>
+                <input type="radio" id="sex_male" value="мужской">мужской
+                <div class="radio-control male"></div>
+            </label>
+            <label>
+                <input type="radio" id="sex_female" value="женский">женский
+                <div class="radio-control female"></div>
+            </label>
+        </div>
+        <div id="gen"></div>
+        <div class="error-box">&nbsp;</div>
+
+        <div>
+            <label for="email">E-mail</label>
+            <input type="email" id="email" >
+            <div class="error-box">&nbsp;</div>
+            <!--- -------------------------->
+            <label for="email">Пароль</label>
+            <input id="password" type="password">
+            <div class="error-box">&nbsp;</div>
+        </div>
+        <button id="showbtn" type="button">Показать пароль</button>
+        <div>
+
+            <label for="country">Страна</label>
+            <select id="country">
+                <option value="select">Выберите страну проживания</option>
+                <option value="Россия">Россия</option>
+                <option value="Украина">Украина</option>
+                <option value="Беларусь">Беларусь</option>
+            </select>
+            <div class="select-arrow"></div>
+        </div>
+        <div id="select"></div>
+        <div class="error-box">&nbsp;</div>
+        <div id="captcha" class ="tooltip" style="v-webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;"></div>
+        <input id="capvalue" type="number">
+        <div class="error-box">&nbsp;</div>
+        <button id='validate' type="button">Отправить</button>
+    </form>
+</div>
+</body>
+<!---->
+<script>
+    /*SHOW HIDE PASSWORD*/
+    function showpass(){
+        var p = document.getElementById('password');
+        p.setAttribute('type', 'text');
+    }
+    function hidepass(){
+        var p = document.getElementById('password');
+        p.setAttribute('type', 'password');
+    }
+
+    function validate(){
+        /* NAME CHECK*/
+        var val = document.getElementById("name").value;
+        var rv_name = /^[a-zA-Zа-яА-Я]+$/; // используем регулярное выражение
+        // Eсли длина имени больше 2ух символов, оно не пустое и удовлетворяет рег. выражению,
+        // то добавляем этому полю класс .not_error,
+        // и ниже в контейнер для ошибок выводим слово "Принято", т.е. валидация для этого поля пройдена успешно
+        if(val.length > 2 && val != '' && rv_name.test(val))
+        {
+            $("#name").addClass('not_error');
+            $("#name").next('.error-box').text('Принято')
+                .css('color','green')
+                .animate({'paddingLeft':'10px'},400)
+                .animate({'paddingLeft':'5px'},400);
+        }
+            // Иначе, мы удаляем класс not-error, и заменяем его на класс error, говоря о том что поле содержит ошибку валидации,
+        // и ниже в наш контейнер выводим сообщение об ошибке и параметры для верной валидации
+        else
+        {
+            $("#name").removeClass('not_error').addClass('error');
+            $("#name").next('.error-box').html('&bull; поле "Имя" обязательно для заполнения<br> &bull; длина имени должна составлять не менее двух символов<br> &bull; поле должно содержать только русские или латинские буквы')
+                .css('color','red')
+                .animate({'paddingLeft':'10px'},400)
+                .animate({'paddingLeft':'5px'},400);
+        }
+
+        //GENDER CHECK
+        if($('#sex_male').is(':checked')) { $("#gen").addClass('not_error'); $("#gen").next('.error-box').text('');/*male*/ }
+        else
+        if($('#sex_female').is(':checked')) { $("#gen").addClass('not_error'); $("#gen").next('.error-box').text('');/*female*/ }
+        else
+        {     $("#gen").removeClass('not_error').addClass('error');
+            $("#gen").next('.error-box').html('pls indicate your gender')
+                .css('color','red')
+                .animate({'paddingLeft':'10px'},400)
+                .animate({'paddingLeft':'5px'},400);
+        }
+
+        //E-MAIL CHECK
+        val = document.getElementById("email").value;
+        var rv_email = /^([a-zA-Z0-9_.-])+@([a-zA-Z0-9_.-])+\.([a-zA-Z])+([a-zA-Z])+/;
+        if(val != '' && rv_email.test(val))
+        {
+            $("#email").addClass('not_error');
+            $("#email").next('.error-box').text('correct')
+                .css('color','green')
+                .animate({'paddingLeft':'10px'},400)
+                .animate({'paddingLeft':'5px'},400);
+        }
+        else
+        {
+            $("#email").removeClass('not_error').addClass('error');
+            $("#email").next('.error-box').html('write correct your e-mail')
+                .css('color','red')
+                .animate({'paddingLeft':'10px'},400)
+                .animate({'paddingLeft':'5px'},400);
+        }
+
+//PASS CHECK
+        val = document.getElementById("password").value;
+        if(val != '')
+        {
+            $("#password").addClass('not_error');
+            $("#password").next('.error-box').text('correct')
+                .css('color','green')
+                .animate({'paddingLeft':'10px'},400)
+                .animate({'paddingLeft':'5px'},400);
+        }
+        else
+        {
+            $("#password").removeClass('not_error').addClass('error');
+            $("#password").next('.error-box').html('write your password')
+                .css('color','red')
+                .animate({'paddingLeft':'10px'},400)
+                .animate({'paddingLeft':'5px'},400);
+        }
+
+        //COUNTRY CHECK
+        val = document.getElementById("country");
+        var selectedValue = val.options[val.selectedIndex].value;
+        if (selectedValue == "select")
+        {
+            $("#select").removeClass('not_error').addClass('error');
+            $("#select").next('.error-box').html('select your country')
+                .css('color','red')
+                .animate({'paddingLeft':'10px'},400)
+                .animate({'paddingLeft':'5px'},400);
+        } else {$("#select").addClass('not_error');
+            $("#select").next('.error-box').html('')}
+
+    }
+
+    // FINAL CHECK
+
+    function check()
+    {
+        validate();
+        var s=document.getElementById('email').value;
+        var sp=document.getElementById('password').value;
+        if ((c==2) && ((a-b)==document.getElementById("capvalue").value) || (c==1) && ((a+b)==document.getElementById("capvalue").value))
+        {
+            // captcha validate
+            $("#capvalue").addClass('not_error');
+            $("#capvalue").next('.error-box').text('correct')
+                .css('color','green')
+                .animate({'paddingLeft':'10px'},400)
+                .animate({'paddingLeft':'5px'},400);
+        }
+        else
+        {
+            $("#capvalue").removeClass('not_error').addClass('error');
+            $("#capvalue").next('.error-box').html('captcha cheking falled')
+                .css('color','red')
+                .animate({'paddingLeft':'10px'},400)
+                .animate({'paddingLeft':'5px'},400);
+        }
+    }
+
+
+
+    $("#validate").on("click", check);
+    $("#showbtn").on("mousedown", showpass);
+    $("#showbtn").on("mouseup", hidepass);
+    $("#name, #email, #password").on("blur",validate);
+    $("#sex_male").on("click",function(){$('#sex_female').attr('checked', false);validate();});
+    $("#sex_female").on("click",function(){$('#sex_male').attr('checked', false); validate();});
+    $("#country").on("change",validate);
+
+    function captcha(){
+        //CAPTCHA
+        a= Math.floor(Math.random() * (100 - 1) + 1);
+        b= Math.floor(Math.random() * (100 - 1) + 1);
+        c= Math.floor(Math.random() * (3 - 1) + 1);
+        if ((c==2)&&(a<b)) {var z=a; a=b; b=z;}
+        if (c==1) {document.getElementById('captcha').innerHTML='<div class="capcha"> write the value of: ' + a +'+' + b + '</div>';}
+        else {document.getElementById('captcha').innerHTML='<div class="capcha"> write the value of: ' + a +'-' + b + '</div>';}
+    }
+</script>
+<!---->
