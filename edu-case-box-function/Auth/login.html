@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Авторизация</title>
+    <link rel="stylesheet" href="AuthStyle.css">
+</head>
+<!---->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script type="text/javascript" src="anim.js"></script>
+<body onload="captcha()">
+<div class="form-wrap">
+    <div class="profile">
+        <h1>Вход</h1>
+
+    </div>
+    <form>
+        <div class="forma">
+            <div class="forma-div">
+                <label for="email">E-mail</label>
+                <input id="email" type="email" >
+                <div class="error-box">&nbsp;</div>
+
+                <label for="password">Пароль</label>
+                <input id="password" type="password">
+                <div class="error-box">&nbsp;</div>
+
+                <div id="captcha" class ="tooltip" style="v-webkit-user-select: none;
+      -khtml-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      -o-user-select: none;
+      user-select: none;"></div>
+                <input id="capvalue" type="number">
+                <div class="error-box">&nbsp;</div>
+            </div>
+            <button type="button" id="showbtn">Показать пароль</button>
+            <button type="button" id='validate'>Отправить</button>
+    </form>
+</div>
+</div>
+</body>
+
+<!---->
+
+<script>
+    var a,b;
+    var c;
+
+    function captcha(){
+        //CAPTCHA
+        a= Math.floor(Math.random() * (100 - 1) + 1);
+        b= Math.floor(Math.random() * (100 - 1) + 1);
+        c= Math.floor(Math.random() * (3 - 1) + 1);
+        if ((c==2)&&(a<b)) {var z=a; a=b; b=z;}
+        if (c==1) {document.getElementById('captcha').innerHTML='<div class="capcha"> write the value of: ' + a +'+' + b + '</div>';}
+        else {document.getElementById('captcha').innerHTML='<div class="capcha"> write the value of: ' + a +'-' + b + '</div>';}
+    }
+
+    //Form check
+    //Form check
+    // Устанавливаем обработчик потери фокуса для всех полей ввода текста
+    function validate(){
+        var val = document.getElementById("email").value;
+        var rv_email = /^([a-zA-Z0-9_.-])+@([a-zA-Z0-9_.-])+\.([a-zA-Z])+([a-zA-Z])+/;
+        if(val != '' && rv_email.test(val))
+        {
+            $("#email").addClass('not_error');
+            $("#email").next('.error-box').text('correct')
+                .css('color','green')
+                .animate({'paddingLeft':'10px'},400)
+                .animate({'paddingLeft':'5px'},400);
+        }
+        else
+        {
+            $("#email").removeClass('not_error').addClass('error');
+            $("#email").next('.error-box').html('write correct your e-mail')
+                .css('color','red')
+                .animate({'paddingLeft':'10px'},400)
+                .animate({'paddingLeft':'5px'},400);
+        }
+// check password
+        var val = document.getElementById("password").value;
+        if(val != '')
+        {
+            $("#password").addClass('not_error');
+            $("#password").next('.error-box').text('correct')
+                .css('color','green')
+                .animate({'paddingLeft':'10px'},400)
+                .animate({'paddingLeft':'5px'},400);
+        }
+        else
+        {
+            $("#password").removeClass('not_error').addClass('error');
+            $("#password").next('.error-box').html('write your password')
+                .css('color','red')
+                .animate({'paddingLeft':'10px'},400)
+                .animate({'paddingLeft':'5px'},400);
+        }
+    }
+
+
+    // check login or not
+    function check(){
+        validate();
+        var s=document.getElementById('email').value;
+        var sp=document.getElementById('password').value;
+        if ((c==2) && ((a-b)==document.getElementById("capvalue").value) || (c==1) && ((a+b)==document.getElementById("capvalue").value))
+        {
+            // captcha validate
+            $("#capvalue").addClass('not_error');
+            $("#capvalue").next('.error-box').text('correct')
+                .css('color','green')
+                .animate({'paddingLeft':'10px'},400)
+                .animate({'paddingLeft':'5px'},400);
+            if(s=='admin@admin.admin'&&sp=='admin'){
+                var s='done';
+                localStorage.setItem('objectToPass',s);
+                //window.location.replace("../index.html");
+                location.href="../index.html";
+            }
+        }
+        else
+        {
+            $("#capvalue").removeClass('not_error').addClass('error');
+            $("#capvalue").next('.error-box').html('captcha cheking falled')
+                .css('color','red')
+                .animate({'paddingLeft':'10px'},400)
+                .animate({'paddingLeft':'5px'},400);
+        }
+    }
+
+
+    function showpass(){
+        var p = document.getElementById('password');
+        p.setAttribute('type', 'text');
+    }
+    function hidepass(){
+        var p = document.getElementById('password');
+        p.setAttribute('type', 'password');
+    }
+
+    $("#validate").on("click", check);
+    $("#showbtn").on("mousedown", showpass);
+    $("#showbtn").on("mouseup", hidepass);
+    $("#email, #password").on("blur",validate);
+</script>
+
+
+<style>
+    .error-box{ font-size: 14px; margin-top: 5px; }</style>
+<!---->
